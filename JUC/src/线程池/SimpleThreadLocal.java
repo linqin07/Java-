@@ -26,7 +26,7 @@ public class SimpleThreadLocal {
 			try {
 				Thread.sleep(500L);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		// executorService.shutdown();
