@@ -5,18 +5,19 @@ import java.util.Arrays;
 /**
  * @author linqin07
  * @title: QuickSortDemo
- * @description: TODO
+ * @description: https://blog.csdn.net/qq_32273417/article/details/105841349
  * @date 2022/4/1219:05 下午
  */
 public class QuickSortDemo {
     public static void main(String[] args) {
-        int arr[] = new int[]{2, 5, 8, 1, 3, 6, 4,-1,-6,55};
+        int arr[] = new int[]{5,2,3,1,4};
         quickSort1(arr, 0, arr.length - 1);
         System.out.println(Arrays.toString(arr));
 
     }
 
     public static void quickSort(int[] arr, int start, int end) {
+        // 这个if判断很关键
         if (start < end) {
             // 使用第一个作为分组数，注意要是 start
             int key = arr[start];
@@ -60,13 +61,16 @@ public class QuickSortDemo {
         int right = end;
         while(left != right) {
             // 移动right
-            while(left<right && arr[right]>key) --right;
+            while(left<right && arr[right]>key) {
+                --right;
+            }
             swap(arr, left, right);
-            while(left<right&& arr[left] <key) ++left;
+            while(left<right&& arr[left] <key) {
+                ++left;
+            }
             swap(arr, left, right);
         }
-        quickSort(arr, start, left-1);
-        quickSort(arr, left+1, end);
-
+        quickSort1(arr, start, left-1);
+        quickSort1(arr, left+1, end);
     }
 }
