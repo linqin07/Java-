@@ -7,20 +7,33 @@ import java.util.concurrent.Executors;
 
 public class SimpleThreadLocal {
 
-	private static final int THREAD_LOOP_SIZE = 500;
-	private static final int MOCK_DIB_DATA_LOOP_SIZE = 10000;
+	private static final int THREAD_LOOP_SIZE = 1;
+	private static final int MOCK_DIB_DATA_LOOP_SIZE = 2;
+    // 内存共享变量，但是线程不隔离
+    private static List<User> list = null;
 
+    // 线程隔离但是new一个子线程是无法共享数据的
 	private static ThreadLocal<List<User>> threadLocal = new ThreadLocal<>();
 
-	public static void main(String[] args) throws InterruptedException {
+    // 即使线程隔离。再new 子线程可以得到数据
+    private static InheritableThreadLocal<List<User>> inheritableThreadLocal = new InheritableThreadLocal<>();
+
+    public static void main(String[] args) throws InterruptedException {
 
 		ExecutorService executorService = Executors.newFixedThreadPool(THREAD_LOOP_SIZE);
 
 		for (int i = 0; i < THREAD_LOOP_SIZE; i++) {
 			executorService.execute(() -> {
+                list = new SimpleThreadLocal().addBigList();
 				threadLocal.set(new SimpleThreadLocal().addBigList());
+                inheritableThreadLocal.set(new SimpleThreadLocal().addBigList());
 				Thread t = Thread.currentThread();
 				System.out.println(Thread.currentThread().getName());
+                new Thread(() -> {
+                    System.out.println(list);
+                    List<User> users = inheritableThreadLocal.get();
+                    System.out.println(Thread.currentThread().getName());
+                }).start();
 				// threadLocal.remove(); // 不取消注释的话就可能出现OOM
 			});
 			try {
